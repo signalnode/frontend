@@ -1,4 +1,6 @@
 import { AppBar, Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+
 
 type NavbarProps = { token?: string };
 
@@ -25,7 +27,7 @@ function Navbar({ token }: NavbarProps) {
             HOMENODE
           </Typography>
           <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-            <Button color="inherit">Login</Button>
+            <Button component={Link} to="/login" color="inherit">Login</Button>
           </Box>
         </Toolbar>
       </AppBar>
