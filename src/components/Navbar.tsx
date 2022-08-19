@@ -5,7 +5,7 @@ import { getAccessToken } from '../token_helper';
 import AuthenticationReducer from '../authentication/AuthenticationReducer';
 
 function Navbar() {
-  const [authState, dispatch] = useReducer(AuthenticationReducer, {});
+  // const [authState, dispatch] = useReducer(AuthenticationReducer, {});
 
   return (
     <Box sx={{ flexGrow: 1 }}>

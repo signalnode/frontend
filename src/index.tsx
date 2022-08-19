@@ -1,12 +1,12 @@
+import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import HomeNode from './views/homenode/HomeNode';
-import reportWebVitals from './reportWebVitals';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from './theme';
-import { CssBaseline } from '@mui/material';
 import { BrowserRouter } from 'react-router-dom';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
+import theme from './theme';
+import HomeNode from './views/HomeNode';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -14,6 +14,7 @@ root.render(
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+
         <HomeNode />
       </ThemeProvider>
     </BrowserRouter>

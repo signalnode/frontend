@@ -1,9 +1,9 @@
 const development = {
-  SERVER_URL: 'http://localhost:4000',
+  BACKEND_URL: 'http://localhost:4000',
 };
 
 const productive = {
-  SERVER_URL: '',
+  BACKEND_URL: '',
 };
 
 export default process.env.NODE_ENV === 'development' ? development : productive;
