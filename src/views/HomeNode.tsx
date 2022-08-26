@@ -1,28 +1,38 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Dashboard from './dashboard/Dashboard';
 import Login from './login/Login';
 
 import './HomeNode.css';
-import { useReducer } from 'react';
-import AuthenticationReducer from '../authentication/AuthenticationReducer';
-import AuthenticationContext from '../authentication/AuthenticationContext';
-import AuthenticationState from '../authentication/AuthenticationState';
+import { useEffect } from 'react';
+import { renewTokens } from '../requests/authentication';
 
 function HomeNode() {
-  const [authState, dispatch] = useReducer(AuthenticationReducer, { accessToken: undefined, refreshToken: undefined, authenticated: false });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const validateAuthentication = async () => {
+      try {
+        await renewTokens();
+      } catch (err) {
+        navigate('/login');
+      }
+    };
+
+    validateAuthentication();
+  }, []);
 
   return (
-    <AuthenticationContext.Provider value={authState}>
-      <div className="HomeNode">
-        <Navbar />
+    // <AuthenticationContext.Provider value={{ accessToken, refreshToken, authenticated: false }}>
+    <div className="HomeNode">
+      <Navbar />
 
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="login" element={<Login />} />
-        </Routes>
-      </div>
-    </AuthenticationContext.Provider>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="login" element={<Login />} />
+      </Routes>
+    </div>
+    // </AuthenticationContext.Provider>
   );
 }
 

@@ -1,0 +1,35 @@
+import Enviroment from '../enviroment';
+import { clearSettings, loadSettings, removeAccessToken, removeRefreshToken, saveSettings } from '../token_helper';
+
+type TokenResponse = { accessToken: string; refreshToken: string } | undefined;
+
+const headers: HeadersInit = { 'Content-Type': 'application/json' };
+
+export const renewTokens = async () => {
+  const { refreshToken } = loadSettings();
+  const res = await fetch(`${Enviroment.BACKEND_URL}/renew`, { method: 'GET', headers: { authorization: `Bearer ${refreshToken}` } });
+
+  if (res.status !== 200) throw new Error();
+
+  const data = await res.json();
+  saveSettings({ accessToken: data.accessToken, refreshToken: data.refreshToken });
+};
+
+export const login = async (username: string, password: string): Promise<void> => {
+  const body = { username, password };
+  const res = await fetch(`${Enviroment.BACKEND_URL}/authenticate`, { method: 'POST', headers, body: JSON.stringify(body) });
+
+  if (res.status !== 200) throw new Error();
+
+  const { accessToken, refreshToken } = await res.json();
+  saveSettings({ accessToken, refreshToken });
+};
+
+export const logout = async (): Promise<void> => {
+  const { refreshToken } = loadSettings();
+  const res = await fetch(`${Enviroment.BACKEND_URL}/logout`, { method: 'GET', headers: { authorization: `Bearer ${refreshToken}` } });
+
+  if (res.status !== 200) throw new Error();
+
+  clearSettings();
+};

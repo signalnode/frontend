@@ -1,11 +1,32 @@
-import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
-import { useReducer } from 'react';
-import { Link } from 'react-router-dom';
-import { getAccessToken } from '../token_helper';
-import AuthenticationReducer from '../authentication/AuthenticationReducer';
+import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import { Link, useNavigate } from 'react-router-dom';
+import { loadSettings } from '../token_helper';
+
+import { logout } from '../requests/authentication';
+import { test } from '../requests/test';
+import { useState } from 'react';
 
 function Navbar() {
-  // const [authState, dispatch] = useReducer(AuthenticationReducer, {});
+  const navigate = useNavigate();
+  const { accessToken } = loadSettings();
+
+  // const [auth, setAuth] = useState(true);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -29,12 +50,45 @@ function Navbar() {
             HOMENODE
           </Typography>
           <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-            <Button component={Link} to="/login" color="inherit">
-              Login
+            {accessToken ? (
+              <>
+                <IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleMenu} color="inherit">
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={handleClose}>My account</MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button component={Link} to="/login" color="inherit">
+                Login
+              </Button>
+            )}
+            <Button onClick={async () => console.log(await test())} color="inherit">
+              Test call
             </Button>
-            <Button onClick={() => console.log(getAccessToken())} color="inherit">
-              Token
+            {/*<Button onClick={() => sendUpdateAccessTokenEvent('TestToken')} color="inherit">
+              Dispatch
             </Button>
+            <Button onClick={() => updateAccessToken('TestToken')} color="inherit">
+              Dispatch
+            </Button> */}
           </Box>
         </Toolbar>
       </AppBar>
