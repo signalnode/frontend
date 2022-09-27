@@ -1,12 +1,15 @@
 import Enviroment from '../enviroment';
 import { clearSettings, loadSettings, removeAccessToken, removeRefreshToken, saveSettings } from '../token_helper';
 
-type TokenResponse = { accessToken: string; refreshToken: string } | undefined;
+export type TokenResponse = { accessToken: string; refreshToken: string } | undefined;
 
 const headers: HeadersInit = { 'Content-Type': 'application/json' };
 
 export const renewTokens = async () => {
   const { refreshToken } = loadSettings();
+  console.log('Renew Tokens...');
+  console.log(`Refresh Token: ${refreshToken}`);
+  console.log('-------------------------------------');
   const res = await fetch(`${Enviroment.BACKEND_URL}/renew`, { method: 'GET', headers: { authorization: `Bearer ${refreshToken}` } });
 
   if (res.status !== 200) throw new Error();

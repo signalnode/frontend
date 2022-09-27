@@ -1,12 +1,14 @@
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import StoreIcon from '@mui/icons-material/Store';
 import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Link, useNavigate } from 'react-router-dom';
 import { loadSettings } from '../token_helper';
 
-import { logout } from '../requests/authentication';
-import { test } from '../requests/test';
 import { useState } from 'react';
+import { logout } from '../requests/authentication';
+import { initDB } from '../requests/install';
+import { test } from '../requests/test';
 
 function Navbar() {
   const navigate = useNavigate();
@@ -36,7 +38,6 @@ function Navbar() {
             variant="h6"
             noWrap
             component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -50,6 +51,15 @@ function Navbar() {
             HOMENODE
           </Typography>
           <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+            <Button onClick={() => initDB()} color="inherit">
+              Init DB
+            </Button>
+            <Button onClick={async () => console.log(await test())} color="inherit">
+              Test call
+            </Button>
+            <IconButton size="large" aria-label="store" onClick={() => navigate('/store')} color="inherit">
+              <StoreIcon />
+            </IconButton>
             {accessToken ? (
               <>
                 <IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleMenu} color="inherit">
@@ -80,15 +90,10 @@ function Navbar() {
                 Login
               </Button>
             )}
-            <Button onClick={async () => console.log(await test())} color="inherit">
-              Test call
+
+            <Button component={Link} to="/dashboard" color="inherit">
+              Dashboard
             </Button>
-            {/*<Button onClick={() => sendUpdateAccessTokenEvent('TestToken')} color="inherit">
-              Dispatch
-            </Button>
-            <Button onClick={() => updateAccessToken('TestToken')} color="inherit">
-              Dispatch
-            </Button> */}
           </Box>
         </Toolbar>
       </AppBar>

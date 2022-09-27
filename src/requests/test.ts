@@ -10,7 +10,7 @@ type User = {
 
 export const test = async (): Promise<User> => {
   const { accessToken } = loadSettings();
-  const res = await fetch(`${Enviroment.BACKEND_URL}/user/1`, { method: 'GET', headers: { authorization: `Bearer ${accessToken}` } });
+  const res = await fetch(`${Enviroment.BACKEND_URL}/users/1`, { method: 'GET', headers: { authorization: `Bearer ${accessToken}` } });
 
   if (res.status !== 200) {
     await renewTokens();
