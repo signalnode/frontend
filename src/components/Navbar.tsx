@@ -1,32 +1,28 @@
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import StoreIcon from '@mui/icons-material/Store';
+import { AccountCircle as AccountCircleIcon, Store as StoreIcon, Extension as ExtensionIcon, Dashboard as DashboardIcon } from '@mui/icons-material';
 import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 
 import { Link, useNavigate } from 'react-router-dom';
 import { loadSettings } from '../token_helper';
 
 import { useState } from 'react';
-import { logout } from '../requests/authentication';
-import { initDB } from '../requests/install';
-import { test } from '../requests/test';
+import { initDB, logout, test } from '../requests';
 
 function Navbar() {
   const navigate = useNavigate();
   const { accessToken } = loadSettings();
-
-  // const [auth, setAuth] = useState(true);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>(undefined);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setAnchorEl(undefined);
   };
 
   const handleLogout = async () => {
     await logout();
+    setAnchorEl(undefined);
     navigate('/login');
   };
 
@@ -57,13 +53,19 @@ function Navbar() {
             <Button onClick={async () => console.log(await test())} color="inherit">
               Test call
             </Button>
-            <IconButton size="large" aria-label="store" onClick={() => navigate('/store')} color="inherit">
-              <StoreIcon />
-            </IconButton>
             {accessToken ? (
               <>
+                <IconButton size="large" aria-label="dashboard" onClick={() => navigate('/dashboard')} color="inherit">
+                  <DashboardIcon />
+                </IconButton>
+                <IconButton size="large" aria-label="addons" onClick={() => navigate('/addons')} color="inherit">
+                  <ExtensionIcon />
+                </IconButton>
+                <IconButton size="large" aria-label="store" onClick={() => navigate('/store')} color="inherit">
+                  <StoreIcon />
+                </IconButton>
                 <IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleMenu} color="inherit">
-                  <AccountCircle />
+                  <AccountCircleIcon />
                 </IconButton>
                 <Menu
                   id="menu-appbar"
@@ -90,10 +92,6 @@ function Navbar() {
                 Login
               </Button>
             )}
-
-            <Button component={Link} to="/dashboard" color="inherit">
-              Dashboard
-            </Button>
           </Box>
         </Toolbar>
       </AppBar>

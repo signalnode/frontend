@@ -1,5 +1,5 @@
 import Enviroment from '../enviroment';
-import { loadSettings, saveSettings } from '../token_helper';
+import { loadSettings } from '../token_helper';
 import { renewTokens } from './authentication';
 
 type User = {

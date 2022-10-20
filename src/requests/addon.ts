@@ -1,46 +1,102 @@
 import Enviroment from '../enviroment';
-import { loadSettings, saveSettings } from '../token_helper';
-import { renewTokens, TokenResponse } from './authentication';
+import { loadSettings } from '../token_helper';
+import { renewTokens } from './authentication';
 
-export type Addon = {
-  id: number;
+export type StoreAddon = {
+  uuid: string;
   name: string;
+  description: string;
   version: string;
+  author: string;
+  wiki?: string;
 };
 
-type AddonResponse = {
-  addons: Addon[];
+export type LocalAddon = StoreAddon & {
+  id: number;
+  settings?: any[];
 };
 
-export const fetchAddons = async (): Promise<Addon[]> => {
-  const { accessToken, refreshToken } = loadSettings();
+export const fetchAvailableAddons = async (): Promise<StoreAddon[]> => {
+  const res = await fetch(`${Enviroment.ADDON_SERVER_URL}`, { method: 'GET' });
+  const data = (await res.json()) as StoreAddon[];
 
-  console.log('Fetching Addons...');
-  console.log(`Current Access Token: ${accessToken}`);
-  console.log(`Current Refresh Token: ${refreshToken}`);
-  console.log('-------------------------------------');
+  return data;
+};
 
-  let res = await fetch(`${Enviroment.BACKEND_URL}/addons`, { method: 'GET', headers: { authorization: `Bearer ${accessToken}` } });
+export const fetchInstalledAddons = async (): Promise<LocalAddon[]> => {
+  const { accessToken } = loadSettings();
 
-  console.log('Addons fetched...');
-  console.log(`Response Status: ${res.status}`);
-  console.log('-------------------------------------');
+  const res = await fetch(`${Enviroment.BACKEND_URL}/addons`, {
+    method: 'GET',
+    headers: { authorization: `Bearer ${accessToken}` },
+  });
 
   if (res.status !== 200) {
     await renewTokens();
 
-    return await fetchAddons();
+    return await fetchInstalledAddons();
   }
 
-  console.log('Parse response...');
+  const data = (await res.json()) as LocalAddon[];
 
-  const data = (await res.json()) as AddonResponse & TokenResponse;
-  if (data && data.accessToken && data.refreshToken) {
-    console.log(`New Access Token: ${data.accessToken}`);
-    console.log(`New Refresh Token: ${data.refreshToken}`);
+  return data;
+};
 
-    saveSettings({ accessToken: data.accessToken, refreshToken: data.refreshToken });
+export const fetchInstalledAddonDetails = async (uuid: string): Promise<LocalAddon> => {
+  const { accessToken } = loadSettings();
+
+  const res = await fetch(`${Enviroment.BACKEND_URL}/addons/${uuid}`, {
+    method: 'GET',
+    headers: { authorization: `Bearer ${accessToken}` },
+  });
+
+  if (res.status !== 200) {
+    await renewTokens();
+
+    return await fetchInstalledAddonDetails(uuid);
   }
 
-  return data.addons;
+  const data = (await res.json()) as LocalAddon;
+
+  return data;
+};
+
+// export const installAddon = async (addon: StoreAddon) => {
+//   const { accessToken } = loadSettings();
+
+//   const res = await fetch(`${Enviroment.BACKEND_URL}/addons/install`, {
+//     method: 'POST',
+//     headers: { authorization: `Bearer ${accessToken}`, 'content-type': 'application/json' },
+//     body: JSON.stringify(addon),
+//   });
+
+//   if (res.status !== 200) {
+//     await renewTokens();
+//     await installAddon(addon);
+//   }
+// };
+
+export const installAddon = async (addon: StoreAddon) => {
+  const { accessToken } = loadSettings();
+
+  const res = await fetch(`${Enviroment.BACKEND_URL}/addons/install/${addon.name}`, {
+    method: 'GET',
+    headers: { authorization: `Bearer ${accessToken}` },
+  });
+
+  if (res.status !== 200) {
+    await renewTokens();
+    await installAddon(addon);
+  }
+};
+
+export const deinstallAddon = async (id: number) => {
+  const { accessToken } = loadSettings();
+
+  const res = await fetch(`${Enviroment.BACKEND_URL}/addons/${id}/deinstall`, { method: 'GET', headers: { authorization: `Bearer ${accessToken}` } });
+
+  if (res.status !== 200) {
+    await renewTokens();
+    await deinstallAddon(id);
+  }
 };
