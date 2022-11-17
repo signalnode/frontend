@@ -1,3 +1,4 @@
+import { UIConfig } from '@signalnode/types';
 import Enviroment from '../enviroment';
 import { loadSettings } from '../token_helper';
 import { renewTokens } from './authentication';
@@ -13,7 +14,8 @@ export type StoreAddon = {
 
 export type LocalAddon = StoreAddon & {
   id: number;
-  settings?: any[];
+  config?: { [key: string]: string };
+  uiConfig?: UIConfig;
 };
 
 export const fetchAvailableAddons = async (): Promise<StoreAddon[]> => {
@@ -32,9 +34,12 @@ export const fetchInstalledAddons = async (): Promise<LocalAddon[]> => {
   });
 
   if (res.status !== 200) {
-    await renewTokens();
-
-    return await fetchInstalledAddons();
+    try {
+      await renewTokens();
+      return await fetchInstalledAddons();
+    } catch {
+      return [];
+    }
   }
 
   const data = (await res.json()) as LocalAddon[];
@@ -42,10 +47,10 @@ export const fetchInstalledAddons = async (): Promise<LocalAddon[]> => {
   return data;
 };
 
-export const fetchInstalledAddonDetails = async (uuid: string): Promise<LocalAddon> => {
+export const fetchInstalledAddonDetails = async (name: string): Promise<LocalAddon> => {
   const { accessToken } = loadSettings();
 
-  const res = await fetch(`${Enviroment.BACKEND_URL}/addons/${uuid}`, {
+  const res = await fetch(`${Enviroment.BACKEND_URL}/addons/${name}`, {
     method: 'GET',
     headers: { authorization: `Bearer ${accessToken}` },
   });
@@ -53,12 +58,44 @@ export const fetchInstalledAddonDetails = async (uuid: string): Promise<LocalAdd
   if (res.status !== 200) {
     await renewTokens();
 
-    return await fetchInstalledAddonDetails(uuid);
+    return await fetchInstalledAddonDetails(name);
   }
 
   const data = (await res.json()) as LocalAddon;
+  console.log(data);
 
   return data;
+};
+
+export const saveAddonConfig = async (name: string, config: object): Promise<void> => {
+  const { accessToken } = loadSettings();
+
+  const res = await fetch(`${Enviroment.BACKEND_URL}/addons/${name}/config`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${accessToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify(config),
+  });
+
+  if (res.status !== 200) {
+    await renewTokens();
+
+    return await saveAddonConfig(name, config);
+  }
+};
+
+export const startAddon = async (name: string): Promise<void> => {
+  const { accessToken } = loadSettings();
+
+  const res = await fetch(`${Enviroment.BACKEND_URL}/addons/${name}/start`, {
+    method: 'GET',
+    headers: { authorization: `Bearer ${accessToken}` },
+  });
+
+  if (res.status !== 200 && res.status !== 404) {
+    await renewTokens();
+
+    return await startAddon(name);
+  }
 };
 
 // export const installAddon = async (addon: StoreAddon) => {

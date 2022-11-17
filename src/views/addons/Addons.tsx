@@ -63,9 +63,9 @@ export default function Store() {
           />
         </Box>
 
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 300px))', gap: 1 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 400px))', gap: 1 }}>
           {filteredAddons.map((addon) => (
-            <Card key={addon.id} variant="outlined" onClick={() => navigate(`/addons/${encodeURI(addon.uuid)}`)} sx={{ cursor: 'pointer' }}>
+            <Card key={addon.id} variant="outlined" onClick={() => navigate(`/addons/${encodeURI(addon.name)}`)} sx={{ cursor: 'pointer' }}>
               <CardContent>
                 <Box sx={{ display: 'flex' }}>
                   <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>

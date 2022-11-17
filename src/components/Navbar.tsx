@@ -1,4 +1,4 @@
-import { AccountCircle as AccountCircleIcon, Store as StoreIcon, Extension as ExtensionIcon, Dashboard as DashboardIcon } from '@mui/icons-material';
+import { AccountCircle as AccountCircleIcon, Store as StoreIcon, Extension as ExtensionIcon, House as DashboardIcon } from '@mui/icons-material';
 import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -44,7 +44,7 @@ function Navbar() {
               textDecoration: 'none',
             }}
           >
-            HOMENODE
+            SIGNALNODE
           </Typography>
           <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
             <Button onClick={() => initDB()} color="inherit">

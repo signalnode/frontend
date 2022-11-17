@@ -1,14 +1,18 @@
 import { TextField } from '@mui/material';
+import { InputElement } from '@signalnode/types';
 
-export type Input = {
-  type: 'input';
-  label: string;
-  name: string;
-  value?: string | boolean;
-};
-
-function InputRenderer(props: { settings: Input }) {
-  return <TextField id={props.settings.name} name={props.settings.name} label={props.settings.label} variant="outlined" />;
+function InputRenderer({ value, element }: { value: string; element: InputElement }) {
+  return (
+    <TextField
+      id={element.name}
+      name={element.name}
+      label={element.label}
+      defaultValue={value}
+      variant="outlined"
+      size="small"
+      sx={element.options && { gridColumnStart: element.options.columnStart, gridRowStart: element.options.rowStart }}
+    />
+  );
 }
 
 export default InputRenderer;

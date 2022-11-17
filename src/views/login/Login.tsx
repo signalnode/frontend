@@ -34,8 +34,8 @@ function Login() {
           Sign in
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField margin="normal" required fullWidth id="username" label="Username" name="username" autoComplete="homenode-username" autoFocus />
-          <TextField margin="normal" required fullWidth name="passphrase" label="Passphrase" type="password" id="passphrase" autoComplete="homenode-passphrase" />
+          <TextField margin="normal" required fullWidth id="username" label="Username" name="username" autoComplete="username" autoFocus />
+          <TextField margin="normal" required fullWidth name="passphrase" label="Passphrase" type="password" id="passphrase" autoComplete="passphrase" />
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Sign In
           </Button>

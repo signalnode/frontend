@@ -6,8 +6,7 @@ import Store from './store/Store';
 import Addons from './addons/Addons';
 
 import { loadSettings } from '../token_helper';
-import './HomeNode.css';
-import AddonOverview from './addons/overview/AddonOverview';
+import AddonDetails from './addons/details/AddonDetails';
 
 function Protected({ children }: any) {
   const { refreshToken } = loadSettings();
@@ -17,7 +16,7 @@ function Protected({ children }: any) {
   return children ? children : <Outlet />;
 }
 
-function HomeNode() {
+function SignalNode() {
   return (
     <div className="HomeNode">
       <Navbar />
@@ -42,7 +41,7 @@ function HomeNode() {
         />
         <Route path="/addons" element={<Protected />}>
           <Route index element={<Addons />} />
-          <Route path="/addons/:uuid" element={<AddonOverview />} />
+          <Route path="/addons/:name" element={<AddonDetails />} />
         </Route>
         <Route path="login" element={<Login />} />
       </Routes>
@@ -50,4 +49,4 @@ function HomeNode() {
   );
 }
 
-export default HomeNode;
+export default SignalNode;

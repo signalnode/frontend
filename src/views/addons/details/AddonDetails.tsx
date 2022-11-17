@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { fetchInstalledAddonDetails, LocalAddon } from '../../../requests/addon';
 import { CircularProgress } from '@mui/material';
 import FormRenderer from '../../../components/settings/FormRenderer';
+import OverviewTab from './tabs/OverviewTab';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -28,8 +29,8 @@ function a11yProps(index: number) {
   };
 }
 
-export default function AddonOverview() {
-  const { uuid } = useParams();
+export default function AddonDetails() {
+  const { name } = useParams();
   const [value, setValue] = useState(0);
   const [addon, setAddon] = useState<LocalAddon>();
 
@@ -39,12 +40,12 @@ export default function AddonOverview() {
 
   useEffect(() => {
     const fetchAddonDetails = async () => {
-      const addon = await fetchInstalledAddonDetails(uuid!);
+      const addon = await fetchInstalledAddonDetails(name!);
       setAddon(addon);
     };
 
     fetchAddonDetails();
-  }, [uuid]);
+  }, [name]);
 
   if (!addon) {
     return (
@@ -64,11 +65,10 @@ export default function AddonOverview() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        {addon.name}
-        {addon.version}
+        <OverviewTab name={addon.name} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <FormRenderer settings={addon.settings} />
+        <FormRenderer addonName={addon.name} config={addon.config} uiConfig={addon.uiConfig} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three

@@ -1,39 +1,54 @@
-import { Box } from '@mui/material';
-import InputRenderer, { Input } from './forms/InputRenderer';
+import { Box, Button } from '@mui/material';
+import InputRenderer from './forms/InputRenderer';
+import { UIConfig } from '@signalnode/types';
+import { saveAddonConfig } from '../../requests';
 
-type Setting = Input;
-
-function FormRenderer(props: { settings: Setting[] | undefined }) {
+function FormRenderer({ addonName, config, uiConfig }: { addonName: string; config?: { [key: string]: string }; uiConfig?: UIConfig }) {
   const form = [];
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log('Click');
+
     const formData = new FormData(event.currentTarget);
 
     const config: { [key: string]: string | undefined } = {};
-    for (const setting of props.settings!) {
-      config[setting.name] = formData.get(setting.name)?.toString();
+    for (const element of uiConfig!.elements) {
+      config[element.name] = formData.get(element.name)?.toString();
     }
 
-    console.log(config);
-
     // TODO: Save config
+    await saveAddonConfig(addonName, config);
   };
 
-  if (!props.settings) {
+  if (!uiConfig) {
     return <h1>No settings</h1>;
   } else {
-    for (const setting of props.settings) {
-      switch (setting.type) {
+    for (const element of uiConfig.elements) {
+      switch (element.type) {
         case 'input':
-          form.push(<InputRenderer key={setting.name} settings={setting} />);
+          form.push(<InputRenderer key={element.name} element={element} value={config ? config[element.name] : ''} />);
       }
     }
 
+    console.log(uiConfig);
+
     return (
-      <Box component="form" sx={{ display: 'grid' }} onSubmit={handleSubmit}>
-        {form}
-      </Box>
+      <>
+        <Box
+          id="addon-settings"
+          component="form"
+          sx={{ display: 'grid', gridTemplateColumns: uiConfig.columnTemplate, gridTemplateRows: uiConfig.rowTemplate, gridGap: uiConfig.gap }}
+          onSubmit={handleSubmit}
+        >
+          {form}
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button key="save" form="addon-settings" type="submit" variant="contained" sx={{ m: 1 }}>
+            Save
+          </Button>
+        </Box>
+      </>
     );
   }
 }

@@ -1,6 +1,6 @@
 const development = {
   BACKEND_URL: 'http://localhost:4000',
-  ADDON_SERVER_URL: 'https://my-json-server.typicode.com/dawosch/homenode-backend/addons',
+  ADDON_SERVER_URL: 'https://my-json-server.typicode.com/signalnode/backend/addons',
 };
 
 const productive = {
