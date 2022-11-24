@@ -15,7 +15,7 @@ export type StoreAddon = {
 export type LocalAddon = StoreAddon & {
   id: number;
   config?: { [key: string]: string };
-  uiConfig?: UIConfig;
+  uiConfig?: UIConfig<unknown>;
 };
 
 export const fetchAvailableAddons = async (): Promise<StoreAddon[]> => {
@@ -116,7 +116,7 @@ export const startAddon = async (name: string): Promise<void> => {
 export const installAddon = async (addon: StoreAddon) => {
   const { accessToken } = loadSettings();
 
-  const res = await fetch(`${Enviroment.BACKEND_URL}/addons/install/${addon.name}`, {
+  const res = await fetch(`${Enviroment.BACKEND_URL}/addons/${addon.name}/install`, {
     method: 'GET',
     headers: { authorization: `Bearer ${accessToken}` },
   });

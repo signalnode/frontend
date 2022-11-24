@@ -3,7 +3,7 @@ import InputRenderer from './forms/InputRenderer';
 import { UIConfig } from '@signalnode/types';
 import { saveAddonConfig } from '../../requests';
 
-function FormRenderer({ addonName, config, uiConfig }: { addonName: string; config?: { [key: string]: string }; uiConfig?: UIConfig }) {
+function FormRenderer({ addonName, config, uiConfig }: { addonName: string; config?: { [key: string]: string }; uiConfig?: UIConfig<unknown> }) {
   const form = [];
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
