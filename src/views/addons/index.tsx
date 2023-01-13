@@ -68,13 +68,13 @@ export default function Store() {
             <Card key={addon.id} variant="outlined" onClick={() => navigate(`/addons/${encodeURI(addon.name)}`)} sx={{ cursor: 'pointer' }}>
               <CardContent>
                 <Box sx={{ display: 'flex' }}>
-                  <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
+                  <Typography variant="overline" component="div" sx={{ flexGrow: 1 }}>
                     {addon.name}
                   </Typography>
-
+{/* 
                   <Typography variant="body2" color="text.secondary">
                     {addon.author}
-                  </Typography>
+                  </Typography> */}
                 </Box>
                 <Typography variant="body2">{addon.description}</Typography>
               </CardContent>

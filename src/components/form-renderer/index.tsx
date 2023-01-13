@@ -29,8 +29,6 @@ function FormRenderer({ addonName, config, uiConfig }: { addonName: string; conf
       }
     }
 
-    console.log(uiConfig);
-
     return (
       <>
         <Box

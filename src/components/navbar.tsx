@@ -1,5 +1,7 @@
-import { AccountCircle as AccountCircleIcon, Store as StoreIcon, Extension as ExtensionIcon, House as DashboardIcon } from '@mui/icons-material';
-import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import { AccountCircle as AccountCircleIcon, Store as StoreIcon, Extension as ExtensionIcon, House as DashboardIcon, ContentCut } from '@mui/icons-material';
+import { AppBar, Box, Button, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import EditIcon from '@mui/icons-material/Edit';
 
 import { Link, useNavigate } from 'react-router-dom';
 import { loadSettings } from '../utils/token-helper';
@@ -84,7 +86,21 @@ function Navbar() {
                 >
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
                   <MenuItem onClick={handleClose}>My account</MenuItem>
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  <Divider sx={{ my: 0.5 }} />
+
+                  <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                      <EditIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Edit Dashboard</ListItemText>
+                  </MenuItem>
+                  <Divider sx={{ my: 0.5 }} />
+                  <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                      <LogoutIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Logout</ListItemText>
+                  </MenuItem>
                 </Menu>
               </>
             ) : (

@@ -27,10 +27,9 @@ export const login = async (username: string, passphrase: string): Promise<void>
 };
 
 export const logout = async (): Promise<void> => {
+  clearSettings();
   const { refreshToken } = loadSettings();
   const res = await fetch(`${Enviroment.BACKEND_URL}/logout`, { method: 'GET', headers: { authorization: `Bearer ${refreshToken}` } });
 
   if (res.status !== 200) throw new Error();
-
-  clearSettings();
 };

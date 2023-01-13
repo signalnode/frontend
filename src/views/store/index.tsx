@@ -17,7 +17,6 @@ export default function Store() {
       const mergedAddons: (StoreAddon & { installed: boolean })[] = [];
       for (const availableAddon of availableAddons) {
         const addon: StoreAddon & { installed: boolean } = {
-          uuid: availableAddon.uuid,
           name: availableAddon.name,
           description: availableAddon.description,
           version: availableAddon.version,
@@ -26,7 +25,7 @@ export default function Store() {
           installed: false,
         };
         for (const installedAddon of installedAddons) {
-          if (installedAddon.uuid === availableAddon.uuid) {
+          if (installedAddon.name === availableAddon.name) {
             addon.installed = true;
             continue;
           }
@@ -53,7 +52,7 @@ export default function Store() {
   const handleInstall = async (addon: StoreAddon) => {
     await installAddon(addon);
 
-    addons.current.find((storeAddon) => storeAddon.uuid === addon.uuid)!.installed = true;
+    addons.current.find((storeAddon) => storeAddon.name === addon.name)!.installed = true;
     filter('');
   };
 
@@ -77,18 +76,18 @@ export default function Store() {
 
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 300px))', gap: 1 }}>
         {filteredAddons.map((addon) => (
-          <Card key={addon.uuid} variant="outlined">
+          <Card key={addon.name} variant="outlined">
             <CardContent>
               <Box sx={{ display: 'flex' }}>
-                <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
+                <Typography variant="overline" component="div" sx={{ flexGrow: 1 }}>
                   {addon.name}
                 </Typography>
-
+{/* 
                 <Typography variant="body2" color="text.secondary">
                   {addon.author}
-                </Typography>
+                </Typography> */}
               </Box>
-              <Typography variant="body2">{addon.description}</Typography>
+              <Typography variant="subtitle2">{addon.description}</Typography>
             </CardContent>
             <CardActions>
               {!addon.installed && (

@@ -4,7 +4,8 @@ import { useParams } from 'react-router-dom';
 import { fetchInstalledAddonDetails, LocalAddon } from '../../../requests/addon';
 import { CircularProgress } from '@mui/material';
 import FormRenderer from '../../../components/form-renderer';
-import OverviewTab from './tabs';
+import OverviewTab from './tabs/overview';
+import EntityTab from './tabs/entities';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -61,16 +62,20 @@ export default function AddonDetails() {
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
           <Tab label="Overview" />
           <Tab label="Settings" />
+          <Tab label="Entities" />
           <Tab label="Logs" />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <OverviewTab name={addon.name} started={!addon.disabled} />
+        <OverviewTab name={addon.name} started={addon.activated} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <FormRenderer addonName={addon.name} config={addon.config} uiConfig={addon.uiConfig} />
       </TabPanel>
       <TabPanel value={value} index={2}>
+        <EntityTab entities={addon.entities} />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
         Item Three
       </TabPanel>
     </Box>
