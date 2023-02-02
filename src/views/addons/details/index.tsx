@@ -1,11 +1,12 @@
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchInstalledAddonDetails, LocalAddon } from '../../../requests/addon';
+import { fetchInstalledAddonDetails } from '../../../requests/addon.request';
 import { CircularProgress } from '@mui/material';
 import FormRenderer from '../../../components/form-renderer';
 import OverviewTab from './tabs/overview';
-import EntityTab from './tabs/entities';
+import PropertyTab from './tabs/properties';
+import { Addon } from '../../../types/addon.type';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -33,7 +34,7 @@ function a11yProps(index: number) {
 export default function AddonDetails() {
   const { name } = useParams();
   const [value, setValue] = useState(0);
-  const [addon, setAddon] = useState<LocalAddon>();
+  const [addon, setAddon] = useState<Addon>();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -42,6 +43,8 @@ export default function AddonDetails() {
   useEffect(() => {
     const fetchAddonDetails = async () => {
       const addon = await fetchInstalledAddonDetails(name!);
+      console.log(addon);
+
       setAddon(addon);
     };
 
@@ -62,7 +65,7 @@ export default function AddonDetails() {
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
           <Tab label="Overview" />
           <Tab label="Settings" />
-          <Tab label="Entities" />
+          <Tab label="Properties" />
           <Tab label="Logs" />
         </Tabs>
       </Box>
@@ -70,10 +73,10 @@ export default function AddonDetails() {
         <OverviewTab name={addon.name} started={addon.activated} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <FormRenderer addonName={addon.name} config={addon.config} uiConfig={addon.uiConfig} />
+        <FormRenderer addonName={addon.name} config={addon.config} configLayout={addon.configLayout} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <EntityTab entities={addon.entities} />
+        <PropertyTab properties={addon.properties} />
       </TabPanel>
       <TabPanel value={value} index={3}>
         Item Three

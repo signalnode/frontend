@@ -3,7 +3,7 @@ import { Alert, Box, Card, CardActions, CardContent, CircularProgress, IconButto
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import { useEffect, useRef, useState } from 'react';
-import { LocalAddon, deinstallAddon, fetchInstalledAddons } from '../../requests/addon';
+import { LocalAddon, deinstallAddon, fetchInstalledAddons } from '../../requests/addon.request';
 
 export default function Store() {
   const [filteredAddons, setFilteredAddons] = useState<LocalAddon[]>([]);

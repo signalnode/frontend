@@ -2,7 +2,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import SignalNode from './signal-node';
+import SignalNode from './signalnode';
 import theme from './theme';
 import { BrowserRouter } from 'react-router-dom';
 

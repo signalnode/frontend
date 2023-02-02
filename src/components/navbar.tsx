@@ -9,7 +9,7 @@ import { loadSettings } from '../utils/token-helper';
 import { useState } from 'react';
 import { initDB, logout, test } from '../requests';
 
-function Navbar() {
+function Navbar({ toggleDashboardMode }: { toggleDashboardMode: () => void }) {
   const navigate = useNavigate();
   const { accessToken } = loadSettings();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>(undefined);
@@ -88,7 +88,7 @@ function Navbar() {
                   <MenuItem onClick={handleClose}>My account</MenuItem>
                   <Divider sx={{ my: 0.5 }} />
 
-                  <MenuItem onClick={handleLogout}>
+                  <MenuItem onClick={() => navigate('/dashboard/edit')}>
                     <ListItemIcon>
                       <EditIcon fontSize="small" />
                     </ListItemIcon>

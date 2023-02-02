@@ -2,7 +2,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, Card, CardActions, CardContent, Chip, InputAdornment, TextField, Typography } from '@mui/material';
 
 import { useEffect, useRef, useState } from 'react';
-import { fetchAvailableAddons, fetchInstalledAddons, installAddon, StoreAddon } from '../../requests/addon';
+import { fetchAvailableAddons, fetchInstalledAddons, installAddon, StoreAddon } from '../../requests/addon.request';
 // import './Store.css';
 
 export default function Store() {
