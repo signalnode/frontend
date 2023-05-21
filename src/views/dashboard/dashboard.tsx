@@ -7,15 +7,22 @@ import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, AreaChart, Area, Le
 import '/node_modules/react-grid-layout/css/styles.css';
 import '/node_modules/react-resizable/css/styles.css';
 import { useEffect, useState } from 'react';
-import { fetchInstalledAddonDetails } from '../../requests';
+import { fetchCards, fetchInstalledAddonDetails } from '../../requests';
 import { SignalNodeProperty } from '@signalnode/types';
-import { Addon } from '../../types/addon.type';
+import { Addon } from '../../types/integration.type';
 import AreaChartCard, { AreaChartData } from '../../components/dashboard-cards/area-chart';
+import { Card } from '../../types/card.type';
+import { fetchHistoryForProperty } from '../../requests/history.request';
+import { Property } from '../../types/property.type';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
+const areaChartConfig = {
+  history: 'today',
+};
+
 export default function Dashboard() {
-  const [addon, setAddon] = useState<Addon>();
+  const [cards, setCards] = useState<Card[]>();
   const layouts = {
     lg: [
       { i: 'a', x: 0, y: 0, w: 1, h: 2, static: true },
@@ -35,66 +42,53 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    const fetchAddonDetails = async () => {
-      const addon = await fetchInstalledAddonDetails('signalnode-solaredge');
-      console.log('Addon:', addon);
-
-      setAddon(addon);
+    const from = new Date();
+    from.setDate(from.getDate() - 1);
+    const to = new Date();
+    const _fetchCards = async () => {
+      const cards = await fetchCards();
+      for (const card of cards) {
+        for (const property of card.properties) {
+          property.history = await fetchHistoryForProperty(property.id, { from, to });
+        }
+      }
+      setCards(cards);
     };
 
-    fetchAddonDetails();
+    _fetchCards();
   }, []);
 
-  const test = (entity: SignalNodeProperty<unknown, unknown>) => {
-    return entity?.history?.map((history) => ({ value: history.value, time: new Date(history.timestamp).getHours() })) ?? [];
-  };
+  const selectedProperties = [
+    { y: 'currentProduction', stroke: '#37bd4b', fill: '#37bd4b' },
+    { y: 'currentConsumption', stroke: '#ff7878', fill: '#ff7878' },
+    { y: 'currentSelfConsumption', stroke: '#468bfa', fill: '#468bfa' },
+  ]; // Comes from GUI
 
-  const data: AreaChartData = {
-    xAxis: 'time',
-    area: ['v1', 'v2', 'v3'],
-    data: [
-      {
-        v1: 1,
-        v2: 5,
-        v3: 1,
-        time: 0,
-      },
-      {
-        v1: 2,
-        v2: 1,
-        v3: 8,
-        time: 1,
-      },
-      {
-        v1: 3,
-        v2: 8,
-        v3: 1,
-        time: 2,
-      },
-      {
-        v1: 4,
-        v2: 2,
-        v3: 5,
-        time: 3,
-      },
-      {
-        v1: 8,
-        v2: 5,
-        v3: 2,
-        time: 4,
-      },
-      {
-        v1: 1,
-        v2: 3,
-        v3: 8,
-        time: 5,
-      },
-    ],
+  const getData = (properties: Property[]) => {
+    const size = Math.max(...properties.map((property) => property.history?.length ?? 0));
+    const results = [];
+    for (let i = 0; i < size; i++) {
+      const data: any = {};
+      for (const propertyName of selectedProperties) {
+        const property = properties.find((property) => property.name === propertyName.y)!;
+        data[propertyName.y] = property.history![i]!.value;
+        if (!data['time']) data['time'] = new Date(property.history![i]!.createdAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }); // TODO: Convert date to corenponding time unit
+      }
+      results.push(data);
+    }
+
+    return results;
   };
 
   return (
     <div>
-      <AreaChartCard data={data} />
+      {cards?.map((card, index) => (
+        <AreaChartCard
+          key={index}
+          data={{ xAxis: 'time', yAxis: selectedProperties, data: getData(card.properties) }}
+          options={{ showGrid: true, showLegend: true, showXAxis: true, showYAxis: true }}
+        />
+      ))}
     </div>
   );
 }

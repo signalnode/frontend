@@ -1,43 +1,48 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export type AreaChartData = {
-  xAxis?: string;
-  yAxis?: string;
-  area: string | string[];
+  xAxis: string;
+  yAxis: string | string[] | { y: string; stroke: string; fill: string }[];
   data: { [key: string]: number }[];
 };
 
-export default function AreaChartCard({ data: { xAxis, yAxis, area, data } }: { data: AreaChartData }) {
+export type AreaChartOptions = {
+  width?: number;
+  height?: number;
+  responsive?: boolean;
+  showTooltip?: boolean;
+  showXAxis?: boolean;
+  showYAxis?: boolean;
+  showLegend?: boolean;
+  showGrid?: boolean;
+  smooth?: boolean;
+};
+
+export default function AreaChartCard({ data: { xAxis, yAxis, data }, options }: { data: AreaChartData; options?: AreaChartOptions }) {
   const renderAreas = () => {
-    if (typeof area === 'string') {
-      return <Area type="monotone" dataKey={area} stroke="#8884d8" fill="#8884d8" />;
+    if (typeof yAxis === 'string') {
+      return <Area {...(options?.smooth && { type: 'monotone' })} dataKey={yAxis} />;
     } else {
-      return area.map((a) => <Area type="monotone" dataKey={a} stroke="#8884d8" fill="#8884d8" />);
+      return yAxis.map((y, i) => {
+        if (typeof y === 'string') {
+          return <Area key={i} {...(options?.smooth && { type: 'monotone' })} dataKey={y} />;
+        } else {
+          return <Area key={i} {...(options?.smooth && { type: 'monotone' })} dataKey={y.y} stroke={y.stroke} fill={y.fill} />;
+        }
+      });
     }
   };
 
   return (
-    <div style={{ width: '100%', height: 300 }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart
-          width={500}
-          height={400}
-          data={data}
-          margin={{
-            top: 10,
-            right: 30,
-            left: 0,
-            bottom: 0,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey={xAxis} />
-          <YAxis />
-          <Tooltip />
+    <ResponsiveContainer width="100%" height={250}>
+      <AreaChart data={data}>
+        {options?.showGrid && <CartesianGrid strokeDasharray="3 3" />}
+        <XAxis dataKey={xAxis} hide={!options?.showXAxis ?? false} />
+        <YAxis hide={!options?.showYAxis ?? false}  unit="kW" />
+        {options?.showTooltip && <Tooltip />}
 
-          {renderAreas()}
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
+        {renderAreas()}
+      </AreaChart>
+    </ResponsiveContainer>
   );
 }

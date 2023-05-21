@@ -9,7 +9,7 @@ import '/node_modules/react-resizable/css/styles.css';
 import { useEffect, useState } from 'react';
 import { fetchInstalledAddonDetails } from '../../../requests';
 import { SignalNodeProperty } from '@signalnode/types';
-import { Addon } from '../../../types/addon.type';
+import { Addon } from '../../../types/integration.type';
 import { useNavigate } from 'react-router-dom';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);

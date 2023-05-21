@@ -52,15 +52,12 @@ function Navbar({ toggleDashboardMode }: { toggleDashboardMode: () => void }) {
             <Button onClick={() => initDB()} color="inherit">
               Init DB
             </Button>
-            <Button onClick={async () => console.log(await test())} color="inherit">
-              Test call
-            </Button>
             {accessToken ? (
               <>
                 <IconButton size="large" aria-label="dashboard" onClick={() => navigate('/dashboard')} color="inherit">
                   <DashboardIcon />
                 </IconButton>
-                <IconButton size="large" aria-label="addons" onClick={() => navigate('/addons')} color="inherit">
+                <IconButton size="large" aria-label="devices" onClick={() => navigate('/devices')} color="inherit">
                   <ExtensionIcon />
                 </IconButton>
                 <IconButton size="large" aria-label="store" onClick={() => navigate('/store')} color="inherit">

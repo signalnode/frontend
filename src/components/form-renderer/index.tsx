@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material';
 import InputRenderer from './forms/input-renderer';
 import { SignalNodeConfigLayout } from '@signalnode/types';
-import { saveAddonConfig } from '../../requests';
+import { saveDeviceConfig } from '../../requests';
 
 function FormRenderer({ addonName, config, configLayout }: { addonName: string; config?: { [key: string]: string }; configLayout?: SignalNodeConfigLayout<unknown> }) {
   const form = [];
@@ -16,7 +16,7 @@ function FormRenderer({ addonName, config, configLayout }: { addonName: string; 
     }
 
     // TODO: Save config
-    await saveAddonConfig(addonName, config);
+    await saveDeviceConfig(addonName, config);
   };
 
   if (!configLayout) {

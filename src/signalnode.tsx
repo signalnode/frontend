@@ -2,11 +2,12 @@ import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Dashboard from './views/dashboard/dashboard';
 import Login from './views/login';
-import Store from './views/store';
-import Addons from './views/addons';
+import Store from './views/store/store';
+import Devices from './views/devices/devices';
+import AddDevice from './views/devices/add';
 
 import { loadSettings } from './utils/token-helper';
-import AddonDetails from './views/addons/details';
+import DeviceDetails from './views/devices/details';
 import { useDashboardMode } from './hooks/dashboard.hook';
 import DashboardEdit from './views/dashboard/edit/edit';
 import AddCard from './views/dashboard/edit/add-card/add-card';
@@ -41,9 +42,10 @@ function SignalNode() {
             </Protected>
           }
         />
-        <Route path="/addons" element={<Protected />}>
-          <Route index element={<Addons />} />
-          <Route path="/addons/:name" element={<AddonDetails />} />
+        <Route path="/devices" element={<Protected />}>
+          <Route index element={<Devices />} />
+          <Route path="/devices/add" element={<AddDevice />} />
+          <Route path="/devices/:name" element={<DeviceDetails />} />
         </Route>
         <Route path="login" element={<Login />} />
       </Routes>
