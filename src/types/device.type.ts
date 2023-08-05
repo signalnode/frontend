@@ -6,8 +6,9 @@ export type Device = {
   name: string;
   description: string;
   activated: boolean;
+  configSchema?: object;
   config?: { [key: string]: string };
-  integration: Integration;
+  // integration: Integration;
   properties: Property[];
   createdAt: string;
   updatedAt: string;

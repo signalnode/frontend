@@ -1,13 +1,15 @@
 import { Button } from '@mui/material';
-import { startDevice } from '../../../../requests';
+import { startDevice, stopDevice } from '../../../../requests';
 
-export default function OverviewTab({ name, started }: { name: string; started: boolean }) {
+export default function OverviewTab({ name, started, onToggleStartStop }: { name: string; started: boolean; onToggleStartStop: () => void }) {
   const handleStart = async () => {
     await startDevice(name);
+    onToggleStartStop();
   };
 
   const handleStop = async () => {
-    // await stopAddon(name);
+    await stopDevice(name);
+    onToggleStartStop();
   };
 
   return (

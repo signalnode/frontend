@@ -1,19 +1,13 @@
-import { Button, SpeedDial } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
-import AddIcon from '@mui/icons-material/Add';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, AreaChart, Area, Legend } from 'recharts';
 
+import { useEffect, useState } from 'react';
+import AreaChartCard from '../../components/charts/area-chart';
+import { fetchCards } from '../../requests';
+import { fetchHistoryForProperty } from '../../requests/history.request';
+import { Card } from '../../types/card.type';
+import { Property } from '../../types/property.type';
 import '/node_modules/react-grid-layout/css/styles.css';
 import '/node_modules/react-resizable/css/styles.css';
-import { useEffect, useState } from 'react';
-import { fetchCards, fetchInstalledAddonDetails } from '../../requests';
-import { SignalNodeProperty } from '@signalnode/types';
-import { Addon } from '../../types/integration.type';
-import AreaChartCard, { AreaChartData } from '../../components/dashboard-cards/area-chart';
-import { Card } from '../../types/card.type';
-import { fetchHistoryForProperty } from '../../requests/history.request';
-import { Property } from '../../types/property.type';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -86,7 +80,7 @@ export default function Dashboard() {
         <AreaChartCard
           key={index}
           data={{ xAxis: 'time', yAxis: selectedProperties, data: getData(card.properties) }}
-          options={{ showGrid: true, showLegend: true, showXAxis: true, showYAxis: true }}
+          options={{ showGrid: true, showLegend: true, hideXAxis: false, hideYAxis: false }}
         />
       ))}
     </div>

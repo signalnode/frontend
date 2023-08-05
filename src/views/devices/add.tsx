@@ -35,7 +35,7 @@ export default function AddDevice() {
     const name = data.get('device-name')!.toString();
     const description = data.get('device-description')!.toString();
     await createDevice(name, description, selectedIntegration!);
-    navigate(`/devices/${name}/config`);
+    navigate(`/devices/${name}`);
   };
 
   return (

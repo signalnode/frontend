@@ -5,12 +5,29 @@ import { Integration } from '../types/integration.type';
 import { loadSettings } from '../utils/token-helper';
 import { renewTokens } from './authentication';
 
-export const fetchDevices = async (preventRetry?: boolean): Promise<Device[]> => {
+export const fetchDevices = async (relations?: boolean, preventRetry?: boolean): Promise<Device[]> => {
   const { accessToken } = loadSettings();
-  const res = await fetch(`${Enviroment.BACKEND_URL}/devices`, {
-    method: 'GET',
-    headers: { authorization: `Bearer ${accessToken}` },
-  });
+
+  const todayStart = new Date();
+  todayStart.setHours(0);
+  todayStart.setMinutes(0);
+  todayStart.setSeconds(0);
+  const todayEnd = new Date();
+  todayEnd.setHours(23);
+  todayEnd.setMinutes(59);
+  todayEnd.setSeconds(59);
+
+  const res = await fetch(
+    `${Enviroment.BACKEND_URL}/devices${
+      relations
+        ? `?relations=properties,properties.history&properties[history][createdAt][gte]=${todayStart.toISOString()}&properties[history][createdAt][lte]=${todayEnd.toISOString()}`
+        : ''
+    }`,
+    {
+      method: 'GET',
+      headers: { authorization: `Bearer ${accessToken}` },
+    }
+  );
 
   if (res.status !== 200 && !preventRetry) {
     try {
@@ -42,7 +59,7 @@ export const createDevice = async (name: string, description: string, integratio
 
 export const fetchDevice = async (name: string, preventRetry?: boolean): Promise<Device | undefined> => {
   const { accessToken } = loadSettings();
-  const res = await fetch(`${Enviroment.BACKEND_URL}/devices/${name}`, {
+  const res = await fetch(`${Enviroment.BACKEND_URL}/devices/${name}?relations=properties`, {
     method: 'GET',
     headers: { authorization: `Bearer ${accessToken}` },
   });
@@ -87,6 +104,21 @@ export const startDevice = async (name: string, preventRetry?: boolean): Promise
     await renewTokens();
 
     return await startDevice(name, true);
+  }
+};
+
+export const stopDevice = async (name: string, preventRetry?: boolean): Promise<void> => {
+  const { accessToken } = loadSettings();
+
+  const res = await fetch(`${Enviroment.BACKEND_URL}/devices/${name}/stop`, {
+    method: 'GET',
+    headers: { authorization: `Bearer ${accessToken}` },
+  });
+
+  if (res.status !== 200 && res.status !== 404 && !preventRetry) {
+    await renewTokens();
+
+    return await stopDevice(name, true);
   }
 };
 

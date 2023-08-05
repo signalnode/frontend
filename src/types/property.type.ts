@@ -1,3 +1,6 @@
+import { Device } from './device.type';
+import { History } from './history.type';
+
 export type Property = {
   id: number;
   name: string;
@@ -5,5 +8,6 @@ export type Property = {
   value: string | number | boolean;
   unit: string;
   useHistory: boolean;
-  history?: { value: string | number | boolean; unit: string; createdAt: string }[];
+  history?: History[];
+  devices?: Device[];
 };

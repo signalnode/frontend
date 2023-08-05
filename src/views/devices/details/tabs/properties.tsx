@@ -23,13 +23,13 @@ import { Property } from '../../../../types/property.type';
 type Props = { properties: Property[] };
 
 export default function PropertyTab({ properties }: Props) {
-  const [selectedEntity, setSelectedEntity] = useState<SignalNodeProperty<unknown, unknown>>();
+  const [selectedProperty, setSelectedProperty] = useState<Property>();
 
   const handleSave = () => {
     // TODO: Save settings
-    setSelectedEntity(undefined);
+    setSelectedProperty(undefined);
   };
-  const handleClose = () => setSelectedEntity(undefined);
+  const handleClose = () => setSelectedProperty(undefined);
 
   return (
     <TableContainer component={Paper}>
@@ -51,13 +51,13 @@ export default function PropertyTab({ properties }: Props) {
               <TableCell align="right">{property.value}</TableCell>
               <TableCell align="left">{property.unit}</TableCell>
               <TableCell align="right">
-                <IconButton aria-label="settings" onClick={() => setSelectedEntity(property)}>
+                <IconButton aria-label="settings" onClick={() => setSelectedProperty(property)}>
                   <SettingsIcon />
                 </IconButton>
-                <Dialog open={selectedEntity !== undefined} onClose={handleClose}>
+                <Dialog open={selectedProperty !== undefined} onClose={handleClose}>
                   <DialogTitle>Settings</DialogTitle>
                   <DialogContent>
-                    <FormControlLabel control={<Checkbox />} label="Use history" />
+                    <FormControlLabel control={<Checkbox checked={property.useHistory} />} label="Use history" />
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>

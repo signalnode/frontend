@@ -3,7 +3,17 @@ import InputRenderer from './forms/input-renderer';
 import { SignalNodeConfigLayout } from '@signalnode/types';
 import { saveDeviceConfig } from '../../requests';
 
-function FormRenderer({ addonName, config, configLayout }: { addonName: string; config?: { [key: string]: string }; configLayout?: SignalNodeConfigLayout<unknown> }) {
+function FormRenderer({
+  addonName,
+  config,
+  configLayout,
+  onSave,
+}: {
+  addonName: string;
+  config?: { [key: string]: string };
+  configLayout?: SignalNodeConfigLayout<unknown>;
+  onSave: () => void;
+}) {
   const form = [];
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -17,6 +27,7 @@ function FormRenderer({ addonName, config, configLayout }: { addonName: string; 
 
     // TODO: Save config
     await saveDeviceConfig(addonName, config);
+    onSave();
   };
 
   if (!configLayout) {

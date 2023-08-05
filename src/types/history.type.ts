@@ -1,5 +1,4 @@
 export type History = {
-  value: string | number | boolean;
-  unit: string;
+  value: any;
   createdAt: string;
 };
