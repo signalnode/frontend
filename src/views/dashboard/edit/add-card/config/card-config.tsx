@@ -18,7 +18,6 @@ export default function CardConfigDialog({ open, onSave, onClose }: CardConfigDi
   useEffect(() => {
     const _fetchProperties = async () => {
       const properties = await fetchProperties();
-      console.log(properties);
       setProperties(properties);
     };
 

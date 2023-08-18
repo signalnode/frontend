@@ -1,9 +1,9 @@
 import { Box, Button } from '@mui/material';
-import InputRenderer from './forms/input-renderer';
+import { InputRenderer } from './forms/input-renderer';
 import { SignalNodeConfigLayout } from '@signalnode/types';
 import { saveDeviceConfig } from '../../requests';
 
-function FormRenderer({
+export function FormRenderer({
   addonName,
   config,
   configLayout,
@@ -35,8 +35,10 @@ function FormRenderer({
   } else {
     for (const element of configLayout.elements) {
       switch (element.type) {
-        case 'input':
+        case 'text':
+        case 'password':
           form.push(<InputRenderer key={element.name} element={element} value={config ? config[element.name] : ''} />);
+          break;
       }
     }
 
@@ -59,5 +61,3 @@ function FormRenderer({
     );
   }
 }
-
-export default FormRenderer;

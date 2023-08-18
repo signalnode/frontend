@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { startDevice } from '../../../../requests';
-import FormRenderer from '../../../../components/form-renderer';
+import { FormRenderer } from '../../../../components/form-renderer';
 import { Device } from '../../../../types/device.type';
 import { SignalNodeConfigLayout } from '@signalnode/types';
 
