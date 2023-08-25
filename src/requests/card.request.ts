@@ -5,7 +5,7 @@ import { renewTokens } from './authentication';
 
 export const fetchCards = async (preventRetry?: boolean): Promise<Card[]> => {
   const { accessToken } = loadSettings();
-  const res = await fetch(`${Enviroment.BACKEND_URL}/cards`, { method: 'GET', headers: { authorization: `Bearer ${accessToken}` } });
+  const res = await fetch(`${Enviroment.BACKEND_URL}/cards`, { method: 'GET', headers: { authorization: `Bearer ${accessToken}`, credentials: 'include' } });
 
   if (res.status !== 200 && !preventRetry) {
     try {

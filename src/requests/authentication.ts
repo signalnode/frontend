@@ -18,7 +18,7 @@ export const renewTokens = async () => {
 
 export const login = async (username: string, passphrase: string): Promise<void> => {
   const body = { username, passphrase };
-  const res = await fetch(`${Enviroment.BACKEND_URL}/authenticate`, { method: 'POST', headers, body: JSON.stringify(body) });
+  const res = await fetch(`${Enviroment.BACKEND_URL}/authenticate`, { method: 'POST', headers, body: JSON.stringify(body), credentials: 'include' });
 
   if (res.status !== 200) throw new Error();
 
