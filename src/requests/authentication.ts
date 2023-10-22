@@ -5,31 +5,32 @@ export type TokenResponse = { accessToken: string; refreshToken: string } | unde
 
 const headers: HeadersInit = { 'Content-Type': 'application/json' };
 
-export const renewTokens = async () => {
-  const { refreshToken } = loadSettings();
-
-  const res = await fetch(`${Enviroment.BACKEND_URL}/renew`, { method: 'GET', headers: { authorization: `Bearer ${refreshToken}` } });
-
-  if (res.status !== 200) throw new Error();
-
-  const data = await res.json();
-  saveSettings({ accessToken: data.accessToken, refreshToken: data.refreshToken });
-};
-
 export const login = async (username: string, passphrase: string): Promise<void> => {
   const body = { username, passphrase };
   const res = await fetch(`${Enviroment.BACKEND_URL}/authenticate`, { method: 'POST', headers, body: JSON.stringify(body), credentials: 'include' });
 
-  if (res.status !== 200) throw new Error();
+  if (res.status !== 204) throw new Error();
 
-  const { accessToken, refreshToken } = await res.json();
-  saveSettings({ accessToken, refreshToken });
+  saveSettings({ accessToken: res.headers.get('authorization') });
 };
+
+// export const renewTokens = async () => {
+//   const { refreshToken } = loadSettings();
+//   const res = await fetch(`${Enviroment.BACKEND_URL}/renew`, { method: 'GET', headers: { authorization: `Bearer ${refreshToken}`, credentials: 'include' } });
+
+//   if (res.status !== 204) throw new Error();
+
+//   saveSettings({ accessToken: res.headers.get('authorization')! });
+// };
 
 export const logout = async (): Promise<void> => {
   try {
-    const { refreshToken } = loadSettings();
-    const res = await fetch(`${Enviroment.BACKEND_URL}/logout`, { method: 'GET', headers: { authorization: `Bearer ${refreshToken}` } });
+    const { accessToken } = loadSettings();
+    await fetch(`${Enviroment.BACKEND_URL}/logout`, {
+      method: 'GET',
+      headers: { authorization: `Bearer ${accessToken}` },
+      credentials: 'include',
+    });
   } finally {
     clearSettings();
   }

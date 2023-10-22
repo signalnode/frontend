@@ -1,10 +1,8 @@
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AreaChartConfigTable } from '../../../../../components/cards/area-chart-config-table';
 import AreaChartCard, { AreaChartAxis, AreaChartData } from '../../../../../components/charts/area-chart';
-import { fetchDevices, fetchProperties } from '../../../../../requests';
-import { fetchHistory } from '../../../../../requests/history.request';
-import { Device } from '../../../../../types/device.type';
+import { fetchProperties } from '../../../../../requests';
 import { History } from '../../../../../types/history.type';
 import { Property } from '../../../../../types/property.type';
 
@@ -116,8 +114,8 @@ export default function CardConfigDialog({ open, onSave, onClose }: CardConfigDi
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={_onSave}>Close</Button>
-        <Button onClick={onClose} autoFocus>
+        <Button onClick={onClose}>Close</Button>
+        <Button onClick={_onSave} autoFocus>
           Save
         </Button>
       </DialogActions>

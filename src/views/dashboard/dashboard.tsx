@@ -1,6 +1,6 @@
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
-import { useEffect, useState } from 'react';
+import { Component, createElement, useEffect, useState } from 'react';
 import AreaChartCard from '../../components/charts/area-chart';
 import { fetchCards } from '../../requests';
 import { fetchHistoryForProperty } from '../../requests/history.request';
@@ -41,6 +41,7 @@ export default function Dashboard() {
     const to = new Date();
     const _fetchCards = async () => {
       const cards = await fetchCards();
+
       for (const card of cards) {
         for (const property of card.properties) {
           property.history = await fetchHistoryForProperty(property.id, { from, to });
@@ -74,15 +75,5 @@ export default function Dashboard() {
     return results;
   };
 
-  return (
-    <div>
-      {cards?.map((card, index) => (
-        <AreaChartCard
-          key={index}
-          data={{ xAxis: 'time', yAxis: selectedProperties, data: getData(card.properties) }}
-          options={{ showGrid: true, showLegend: true, hideXAxis: false, hideYAxis: false }}
-        />
-      ))}
-    </div>
-  );
+  return <div>{cards?.map((card, index) => createElement(card.name, { ...card }))}</div>;
 }

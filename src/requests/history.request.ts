@@ -1,7 +1,6 @@
 import Enviroment from '../env';
 import { History } from '../types/history.type';
-import { loadSettings } from '../utils/token-helper';
-import { renewTokens } from './authentication';
+import { loadSettings, saveSettings } from '../utils/token-helper';
 
 export const fetchHistory = async (options?: { properties?: string[]; relations?: true }, preventRetry?: boolean): Promise<History[]> => {
   const { accessToken } = loadSettings();
@@ -16,22 +15,17 @@ export const fetchHistory = async (options?: { properties?: string[]; relations?
   todayEnd.setSeconds(59);
   // filter?.unshift('?');
   const res = await fetch(
-    `${Enviroment.BACKEND_URL}/history${filter ? `?createdAt[gte]=${todayStart.toISOString()}&createdAt[lte]=${todayEnd.toISOString()}&property[name][in]=${filter}` : ''}`,
+    `${Enviroment.BACKEND_URL}/history${
+      filter ? `?createdAt[gte]=${todayStart.toISOString()}&createdAt[lte]=${todayEnd.toISOString()}&property[name][in]=${filter}` : ''
+    }`,
     {
       method: 'GET',
       headers: { authorization: `Bearer ${accessToken}` },
+      credentials: 'include',
     }
   );
 
-  if (res.status !== 200 && !preventRetry) {
-    try {
-      await renewTokens();
-      return await fetchHistory(options, true);
-    } catch {
-      return [];
-    }
-  }
-
+  saveSettings({ accessToken: res.headers.get('authorization')! });
   return (await res.json()) as History[];
 };
 
@@ -41,17 +35,10 @@ export const fetchHistoryForProperty = async (id: number, options?: { from?: Dat
   const res = await fetch(`${Enviroment.BACKEND_URL}/history`, {
     method: 'POST',
     headers: { authorization: `Bearer ${accessToken}`, 'content-type': 'application/json' },
+    credentials: 'include',
     body,
   });
 
-  if (res.status !== 200 && !preventRetry) {
-    try {
-      await renewTokens();
-      return await fetchHistoryForProperty(id, options, true);
-    } catch {
-      return [];
-    }
-  }
-
+  saveSettings({ accessToken: res.headers.get('authorization')! });
   return (await res.json()) as History[];
 };

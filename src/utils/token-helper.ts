@@ -18,12 +18,17 @@ export const validateToken = async (token: string) => {
 };
 
 type SignalNodeSettings = {
-  accessToken?: string;
-  refreshToken?: string;
+  accessToken?: string | null;
+  refreshToken?: string | null;
 };
 
 export const saveSettings = (settings: SignalNodeSettings) => {
-  localStorage.setItem('SIGNALNODE_SETTINGS', JSON.stringify(settings));
+  const _settings = Object.entries(settings).reduce((acc, [key, value]) => {
+    return key && value ? { ...acc, [key]: value } : acc;
+  }, {});
+  if (Object.keys(_settings).length) {
+    localStorage.setItem('SIGNALNODE_SETTINGS', JSON.stringify(_settings));
+  }
 };
 
 export const loadSettings = () => {

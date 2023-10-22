@@ -1,8 +1,7 @@
 import { SignalNodeConfigLayout, SignalNodeProperty } from '@signalnode/types';
 import Enviroment from '../env';
 import { Integration } from '../types/integration.type';
-import { loadSettings } from '../utils/token-helper';
-import { renewTokens } from './authentication';
+import { loadSettings, saveSettings } from '../utils/token-helper';
 
 export type StoreIntegration = {
   name: string;
@@ -12,9 +11,8 @@ export type StoreIntegration = {
 };
 
 export const fetchUninstalledIntegrations = async (): Promise<StoreIntegration[]> => {
-  const res = await fetch(`${Enviroment.ADDON_SERVER_URL}`, { method: 'GET' });
+  const res = await fetch(`${Enviroment.ADDON_SERVER_URL}`, { method: 'GET', credentials: 'include' });
   const data = (await res.json()) as StoreIntegration[];
-
   return data;
 };
 
@@ -24,19 +22,10 @@ export const fetchInstalledIntegrations = async (preventRetry?: boolean): Promis
   const res = await fetch(`${Enviroment.BACKEND_URL}/integrations`, {
     method: 'GET',
     headers: { authorization: `Bearer ${accessToken}` },
+    credentials: 'include',
   });
-
-  if (res.status !== 200 && !preventRetry) {
-    try {
-      await renewTokens();
-      return await fetchInstalledIntegrations(true);
-    } catch {
-      return [];
-    }
-  }
-
+  saveSettings({ accessToken: res.headers.get('authorization')! });
   const data = (await res.json()) as Integration[];
-
   return data;
 };
 
@@ -115,12 +104,10 @@ export const installIntegration = async (addon: StoreIntegration, preventRetry?:
   const res = await fetch(`${Enviroment.BACKEND_URL}/integrations/${addon.name}/install`, {
     method: 'GET',
     headers: { authorization: `Bearer ${accessToken}` },
+    credentials: 'include',
   });
 
-  if (res.status !== 200 && !preventRetry) {
-    await renewTokens();
-    await installIntegration(addon, true);
-  }
+  saveSettings({ accessToken: res.headers.get('authorization')! });
 };
 
 // export const deinstallAddon = async (id: number, preventRetry?: boolean) => {

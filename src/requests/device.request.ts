@@ -2,8 +2,7 @@ import { SignalNodeConfigLayout, SignalNodeProperty } from '@signalnode/types';
 import Enviroment from '../env';
 import { Device } from '../types/device.type';
 import { Integration } from '../types/integration.type';
-import { loadSettings } from '../utils/token-helper';
-import { renewTokens } from './authentication';
+import { loadSettings, saveSettings } from '../utils/token-helper';
 
 export const fetchDevices = async (relations?: boolean, preventRetry?: boolean): Promise<Device[]> => {
   const { accessToken } = loadSettings();
@@ -26,17 +25,11 @@ export const fetchDevices = async (relations?: boolean, preventRetry?: boolean):
     {
       method: 'GET',
       headers: { authorization: `Bearer ${accessToken}` },
+      credentials: 'include',
     }
   );
 
-  if (res.status !== 200 && !preventRetry) {
-    try {
-      await renewTokens();
-      return await fetchDevices(true);
-    } catch {
-      return [];
-    }
-  }
+  saveSettings({ accessToken: res.headers.get('authorization')! });
   const data = (await res.json()) as Device[];
   return data;
 };
@@ -46,15 +39,11 @@ export const createDevice = async (name: string, description: string, integratio
   const res = await fetch(`${Enviroment.BACKEND_URL}/devices`, {
     method: 'POST',
     headers: { authorization: `Bearer ${accessToken}`, 'content-type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ name, description, integration }),
   });
 
-  if (res.status !== 200 && !preventRetry) {
-    try {
-      await renewTokens();
-      return await createDevice(name, description, integration, true);
-    } catch {}
-  }
+  saveSettings({ accessToken: res.headers.get('authorization')! });
 };
 
 export const fetchDevice = async (name: string, preventRetry?: boolean): Promise<Device | undefined> => {
@@ -62,16 +51,10 @@ export const fetchDevice = async (name: string, preventRetry?: boolean): Promise
   const res = await fetch(`${Enviroment.BACKEND_URL}/devices/${name}?relations=properties`, {
     method: 'GET',
     headers: { authorization: `Bearer ${accessToken}` },
+    credentials: 'include',
   });
 
-  if (res.status !== 200 && !preventRetry) {
-    try {
-      await renewTokens();
-      return await fetchDevice(name, true);
-    } catch {
-      return undefined;
-    }
-  }
+  saveSettings({ accessToken: res.headers.get('Authorization')! });
   const data = (await res.json()) as Device;
   return data;
 };
@@ -82,14 +65,11 @@ export const saveDeviceConfig = async (name: string, config: object, preventRetr
   const res = await fetch(`${Enviroment.BACKEND_URL}/devices/${name}/config`, {
     method: 'POST',
     headers: { authorization: `Bearer ${accessToken}`, 'content-type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(config),
   });
 
-  if (res.status !== 200 && !preventRetry) {
-    await renewTokens();
-
-    return await saveDeviceConfig(name, config, true);
-  }
+  saveSettings({ accessToken: res.headers.get('authorization')! });
 };
 
 export const startDevice = async (name: string, preventRetry?: boolean): Promise<void> => {
@@ -98,13 +78,10 @@ export const startDevice = async (name: string, preventRetry?: boolean): Promise
   const res = await fetch(`${Enviroment.BACKEND_URL}/devices/${name}/start`, {
     method: 'GET',
     headers: { authorization: `Bearer ${accessToken}` },
+    credentials: 'include',
   });
 
-  if (res.status !== 200 && res.status !== 404 && !preventRetry) {
-    await renewTokens();
-
-    return await startDevice(name, true);
-  }
+  saveSettings({ accessToken: res.headers.get('authorization')! });
 };
 
 export const stopDevice = async (name: string, preventRetry?: boolean): Promise<void> => {
@@ -113,13 +90,10 @@ export const stopDevice = async (name: string, preventRetry?: boolean): Promise<
   const res = await fetch(`${Enviroment.BACKEND_URL}/devices/${name}/stop`, {
     method: 'GET',
     headers: { authorization: `Bearer ${accessToken}` },
+    credentials: 'include',
   });
 
-  if (res.status !== 200 && res.status !== 404 && !preventRetry) {
-    await renewTokens();
-
-    return await stopDevice(name, true);
-  }
+  saveSettings({ accessToken: res.headers.get('authorization')! });
 };
 
 // export const stopAddon = async (name: string, preventRetry?: boolean): Promise<void> => {

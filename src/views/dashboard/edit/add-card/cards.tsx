@@ -23,9 +23,7 @@ export default function Cards() {
   };
 
   const onSaveCardConfig = (config: any) => {
-    config['type'] = cards[selectedCard!].type;
-
-    // saveConfig
+    addCard({ type: cards[selectedCard!].type, config });
   };
 
   const renderCards = () =>

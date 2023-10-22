@@ -15,9 +15,9 @@ import Cards from './views/dashboard/edit/add-card/cards';
 import './signalnode.css';
 
 function Protected({ children }: any) {
-  const { refreshToken } = loadSettings();
+  const { accessToken } = loadSettings();
 
-  if (!refreshToken) return <Navigate replace to="/login" />;
+  if (!accessToken) return <Navigate replace to="/login" />;
 
   return children ? children : <Outlet />;
 }

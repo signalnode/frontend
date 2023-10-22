@@ -2,7 +2,7 @@ import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../requests/authentication';
 
-function Login() {
+export default function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -56,5 +56,3 @@ function Login() {
     </Container>
   );
 }
-
-export default Login;
