@@ -1,6 +1,6 @@
 const development = {
-  BACKEND_URL: 'http://localhost:4000',
-  ADDON_SERVER_URL: 'http://localhost:4000/store',
+  BACKEND_URL: 'http://localhost:3000',
+  ADDON_SERVER_URL: 'http://localhost:3000/store',
 };
 
 const productive = {
